@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import random
+import time
 import zipfile
 from collections import defaultdict
 from pathlib import Path
+from urllib.error import URLError
 from urllib.request import urlretrieve
 
 from datasets import load_dataset
@@ -24,7 +26,19 @@ def _download_qrels(cache_dir: Path) -> dict[str, list[str]]:
     cache_dir.mkdir(parents=True, exist_ok=True)
     zip_path = cache_dir / "scifact.zip"
     if not zip_path.exists():
-        urlretrieve(BEIR_SCIFACT_ZIP, zip_path)  # noqa: S310
+        last_err: URLError | None = None
+        for attempt in range(3):
+            try:
+                urlretrieve(BEIR_SCIFACT_ZIP, zip_path)  # noqa: S310
+                last_err = None
+                break
+            except URLError as exc:
+                last_err = exc
+                if zip_path.exists():
+                    zip_path.unlink()
+                time.sleep(2**attempt)
+        if last_err is not None:
+            raise last_err
 
     qrels: dict[str, list[str]] = defaultdict(list)
     with zipfile.ZipFile(zip_path) as archive:
