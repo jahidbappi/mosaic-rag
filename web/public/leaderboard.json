@@ -1,0 +1,62 @@
+[
+  {
+    "name": "bm25-semantic-mock",
+    "strategy": "bm25",
+    "chunker": "semantic",
+    "embedder": "mock-text",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 1.0,
+      "recall_at_5": 1.0,
+      "mrr": 1.0,
+      "faithfulness": 0.707,
+      "p50_latency_ms": 0.085,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "hybrid-semantic-mm",
+    "strategy": "hybrid",
+    "chunker": "semantic",
+    "embedder": "mock-multimodal",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 0.5,
+      "recall_at_5": 0.833,
+      "mrr": 0.644,
+      "faithfulness": 0.708,
+      "p50_latency_ms": 0.552,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "dense-fixed-mock",
+    "strategy": "dense",
+    "chunker": "fixed-size",
+    "embedder": "mock-text",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 0.5,
+      "recall_at_5": 1.0,
+      "mrr": 0.639,
+      "faithfulness": 0.749,
+      "p50_latency_ms": 0.125,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "hybrid-fixed-mm",
+    "strategy": "hybrid",
+    "chunker": "fixed-size",
+    "embedder": "mock-multimodal",
+    "reranker": "cross-encoder",
+    "metrics": {
+      "recall_at_1": 0.167,
+      "recall_at_5": 1.0,
+      "mrr": 0.45,
+      "faithfulness": 0.754,
+      "p50_latency_ms": 0.426,
+      "cost_per_query_usd": 0.0002
+    }
+  }
+]
