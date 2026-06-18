@@ -11,12 +11,6 @@ license = "MIT"
 requires-python = ">=3.11"
 authors = [{ name = "Md. Jahidul Islam", email = "jahidbappi@users.noreply.github.com" }]
 keywords = ["rag", "multimodal", "retrieval", "evaluation", "embeddings"]
-
-[project.urls]
-Homepage = "https://mosaic-rag.vercel.app"
-Documentation = "https://mosaic-rag.vercel.app/docs"
-Benchmarks = "https://mosaic-rag.vercel.app/benchmarks"
-Repository = "https://github.com/jahidbappi/mosaic-rag"
 classifiers = [
   "Development Status :: 4 - Beta",
   "Intended Audience :: Developers",
@@ -30,6 +24,12 @@ dependencies = [
   "numpy>=1.26.0",
   "pillow>=10.0.0",
 ]
+
+[project.urls]
+Homepage = "https://mosaic-rag.vercel.app"
+Documentation = "https://mosaic-rag.vercel.app/docs"
+Benchmarks = "https://mosaic-rag.vercel.app/benchmarks"
+Repository = "https://github.com/jahidbappi/mosaic-rag"
 
 [project.optional-dependencies]
 ml = [
