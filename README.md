@@ -1,6 +1,7 @@
 # Mosaic
 
 [![Mosaic CI](https://github.com/jahidbappi/mosaic-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/jahidbappi/mosaic-rag/actions)
+[![Website](https://img.shields.io/badge/website-mosaic--rag.vercel.app-emerald?style=flat-square)](https://mosaic-rag.vercel.app)
 
 **Multimodal retrieval engine with a reproducible evaluation harness.**
 

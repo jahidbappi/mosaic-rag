@@ -1,7 +1,13 @@
 {
-  "name": "web",
+  "name": "mosaic-web",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://mosaic-rag.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jahidbappi/mosaic-rag.git",
+    "directory": "web"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
