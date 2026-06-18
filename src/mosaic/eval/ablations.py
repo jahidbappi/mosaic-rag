@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
-
 import subprocess
+from pathlib import Path
 
 from mosaic.chunking.chunkers import FixedSizeChunker, SemanticChunker
 from mosaic.embeddings.providers import MockMultimodalEmbedder, MockTextEmbedder
