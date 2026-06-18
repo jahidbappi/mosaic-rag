@@ -4,6 +4,8 @@
 
 **Multimodal retrieval engine with a reproducible evaluation harness.**
 
+**Live website:** https://mosaic-rag.vercel.app · **Docs:** https://mosaic-rag.vercel.app/docs · **Benchmarks:** https://mosaic-rag.vercel.app/benchmarks
+
 Mosaic assembles text and image chunks into grounded, cited answers — like tiles in a mosaic forming one coherent picture. It ships pluggable embeddings, hybrid retrieval, rerankers, chunking strategies, and honest benchmark ablations.
 
 ## Why Mosaic
