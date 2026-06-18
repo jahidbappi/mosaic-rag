@@ -23,6 +23,7 @@ dependencies = [
   "pydantic>=2.9.0",
   "numpy>=1.26.0",
   "pillow>=10.0.0",
+  "datasets>=3.0.0",
 ]
 
 [project.urls]
@@ -70,3 +71,6 @@ packages = ["mosaic"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+markers = [
+  "slow: integration tests that download real datasets",
+]

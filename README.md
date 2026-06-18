@@ -39,7 +39,7 @@ python3 -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 pytest
-mosaic-benchmark --quick
+mosaic-benchmark --quick --dataset builtin
 mosaic-benchmark --output benchmarks/results
 ```
 
@@ -70,18 +70,21 @@ print(answer.citations)
 
 ## Benchmark
 
-Run full ablations:
+Run ablations on **BEIR SciFact** (default) or other datasets:
 
 ```bash
 mosaic-benchmark --output benchmarks/results
+mosaic-benchmark --dataset scifact --max-samples 300 --embedder minilm
+mosaic-benchmark --dataset docvqa --max-samples 50
+mosaic-benchmark --dataset builtin --quick   # synthetic smoke test only
 ```
+
+See [DATASETS.md](DATASETS.md) for citations, licenses, and reproducibility details.
 
 Outputs:
 
 - `benchmarks/results/ablation_results.json`
-- `benchmarks/results/leaderboard.json`
-
-See [docs/benchmarks.md](docs/benchmarks.md) for methodology and findings.
+- `benchmarks/results/leaderboard.json` (includes dataset, embedder, timestamp metadata)
 
 ## Development
 

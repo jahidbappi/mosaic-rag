@@ -1,62 +1,110 @@
-[
-  {
-    "name": "bm25-semantic-mock",
-    "strategy": "bm25",
-    "chunker": "semantic",
-    "embedder": "mock-text",
-    "reranker": "score-fusion",
-    "metrics": {
-      "recall_at_1": 1.0,
-      "recall_at_5": 1.0,
-      "mrr": 1.0,
-      "faithfulness": 0.707,
-      "p50_latency_ms": 0.085,
-      "cost_per_query_usd": 0.0002
+{
+  "dataset": "scifact",
+  "num_samples": 50,
+  "num_corpus": 5183,
+  "embedder": "mock-text",
+  "timestamp": "2026-06-18T20:00:42.550949+00:00",
+  "citation": "Thakur et al. (2021). BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks Track.",
+  "license": "Apache-2.0 (BEIR); SciFact corpus derived from scientific claim verification research.",
+  "source_url": "https://huggingface.co/datasets/BeIR/scifact",
+  "seed": 42,
+  "multimodal": false,
+  "results": [
+    {
+      "name": "bm25-semantic",
+      "strategy": "bm25",
+      "chunker": "semantic",
+      "embedder": "mock-text",
+      "reranker": "score-fusion",
+      "dataset": "scifact",
+      "num_samples": 50,
+      "timestamp": "2026-06-18T20:00:42.550949+00:00",
+      "metrics": {
+        "recall_at_1": 0.66,
+        "recall_at_5": 0.82,
+        "recall_at_10": 0.88,
+        "mrr": 0.7350793650793651,
+        "faithfulness": 0.434256144901663,
+        "correctness": 0.3753326608395964,
+        "p50_latency_ms": 35.85216699866578,
+        "p95_latency_ms": 73.86591701651923,
+        "cost_per_query_usd": 0.0002
+      },
+      "citation": "Thakur et al. (2021). BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks Track.",
+      "source_url": "https://huggingface.co/datasets/BeIR/scifact",
+      "requested_embedder": "mock"
+    },
+    {
+      "name": "dense-fixed",
+      "strategy": "dense",
+      "chunker": "fixed-size",
+      "embedder": "mock-text",
+      "reranker": "score-fusion",
+      "dataset": "scifact",
+      "num_samples": 50,
+      "timestamp": "2026-06-18T20:00:42.550949+00:00",
+      "metrics": {
+        "recall_at_1": 0.0,
+        "recall_at_5": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0,
+        "faithfulness": 0.39967803208433744,
+        "correctness": 0.11198675310398176,
+        "p50_latency_ms": 28.583375009475276,
+        "p95_latency_ms": 42.27800000808202,
+        "cost_per_query_usd": 0.0002
+      },
+      "citation": "Thakur et al. (2021). BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks Track.",
+      "source_url": "https://huggingface.co/datasets/BeIR/scifact",
+      "requested_embedder": "mock"
+    },
+    {
+      "name": "hybrid-semantic",
+      "strategy": "hybrid",
+      "chunker": "semantic",
+      "embedder": "mock-text",
+      "reranker": "score-fusion",
+      "dataset": "scifact",
+      "num_samples": 50,
+      "timestamp": "2026-06-18T20:00:42.550949+00:00",
+      "metrics": {
+        "recall_at_1": 0.0,
+        "recall_at_5": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0,
+        "faithfulness": 0.4012056524109627,
+        "correctness": 0.11556652720618871,
+        "p50_latency_ms": 1109.2042919772211,
+        "p95_latency_ms": 1465.4094580037054,
+        "cost_per_query_usd": 0.0002
+      },
+      "citation": "Thakur et al. (2021). BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks Track.",
+      "source_url": "https://huggingface.co/datasets/BeIR/scifact",
+      "requested_embedder": "mock"
+    },
+    {
+      "name": "hybrid-fixed-xenc",
+      "strategy": "hybrid",
+      "chunker": "fixed-size",
+      "embedder": "mock-text",
+      "reranker": "cross-encoder",
+      "dataset": "scifact",
+      "num_samples": 50,
+      "timestamp": "2026-06-18T20:00:42.550949+00:00",
+      "metrics": {
+        "recall_at_1": 0.0,
+        "recall_at_5": 0.0,
+        "recall_at_10": 0.0,
+        "mrr": 0.0,
+        "faithfulness": 0.4012056524109627,
+        "correctness": 0.11556652720618871,
+        "p50_latency_ms": 1333.731541002635,
+        "p95_latency_ms": 1747.79695799225,
+        "cost_per_query_usd": 0.0002
+      },
+      "citation": "Thakur et al. (2021). BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of Information Retrieval Models. NeurIPS Datasets and Benchmarks Track.",
+      "source_url": "https://huggingface.co/datasets/BeIR/scifact",
+      "requested_embedder": "mock"
     }
-  },
-  {
-    "name": "hybrid-semantic-mm",
-    "strategy": "hybrid",
-    "chunker": "semantic",
-    "embedder": "mock-multimodal",
-    "reranker": "score-fusion",
-    "metrics": {
-      "recall_at_1": 0.5,
-      "recall_at_5": 0.833,
-      "mrr": 0.644,
-      "faithfulness": 0.708,
-      "p50_latency_ms": 0.552,
-      "cost_per_query_usd": 0.0002
-    }
-  },
-  {
-    "name": "dense-fixed-mock",
-    "strategy": "dense",
-    "chunker": "fixed-size",
-    "embedder": "mock-text",
-    "reranker": "score-fusion",
-    "metrics": {
-      "recall_at_1": 0.5,
-      "recall_at_5": 1.0,
-      "mrr": 0.639,
-      "faithfulness": 0.749,
-      "p50_latency_ms": 0.125,
-      "cost_per_query_usd": 0.0002
-    }
-  },
-  {
-    "name": "hybrid-fixed-mm",
-    "strategy": "hybrid",
-    "chunker": "fixed-size",
-    "embedder": "mock-multimodal",
-    "reranker": "cross-encoder",
-    "metrics": {
-      "recall_at_1": 0.167,
-      "recall_at_5": 1.0,
-      "mrr": 0.45,
-      "faithfulness": 0.754,
-      "p50_latency_ms": 0.426,
-      "cost_per_query_usd": 0.0002
-    }
-  }
-]
+  ]
+}

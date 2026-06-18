@@ -24,10 +24,10 @@ jobs:
         run: ruff check src tests
 
       - name: Pytest
-        run: pytest --cov=mosaic --cov-report=term-missing
+        run: pytest --cov=mosaic --cov-report=term-missing -m "not slow"
 
-      - name: Benchmark
-        run: mosaic-benchmark --output benchmarks/results
+      - name: Benchmark SciFact (mock, no torch)
+        run: mosaic-benchmark --dataset scifact --max-samples 20 --embedder mock --output benchmarks/results
 
       - name: Upload benchmark artifacts
         uses: actions/upload-artifact@v4

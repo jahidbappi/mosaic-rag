@@ -3,8 +3,10 @@ from __future__ import annotations
 import statistics
 import time
 from dataclasses import dataclass
+from datetime import UTC, datetime
 
 from mosaic.eval.datasets import load_benchmark_samples, load_sample_corpus
+from mosaic.eval.loaders.types import EvalBundle
 from mosaic.pipeline import MosaicPipeline
 from mosaic.types import BenchmarkMetrics, BenchmarkSample, Query
 
@@ -37,6 +39,9 @@ class AblationResult:
     embedder: str
     reranker: str
     metrics: BenchmarkMetrics
+    dataset: str = "builtin"
+    num_samples: int = 0
+    timestamp: str = ""
 
 
 def content_relevant(chunk_content: str, sample: BenchmarkSample) -> bool:
@@ -56,12 +61,29 @@ def reciprocal_rank_content(retrieved_contents: list[str], sample: BenchmarkSamp
 
 
 class BenchmarkHarness:
-    def __init__(self, pipeline: MosaicPipeline, samples: list[BenchmarkSample] | None = None) -> None:
+    def __init__(
+        self,
+        pipeline: MosaicPipeline,
+        bundle: EvalBundle | None = None,
+        samples: list[BenchmarkSample] | None = None,
+    ) -> None:
         self.pipeline = pipeline
-        self.samples = samples or load_benchmark_samples()
+        if bundle is not None:
+            self.bundle = bundle
+            self.samples = bundle.samples
+        else:
+            self.bundle = None
+            self.samples = samples or load_benchmark_samples()
 
-    def run(self, *, chunk: bool = False) -> BenchmarkMetrics:
-        self.pipeline.index(load_sample_corpus(), chunk=chunk)
+    def run(self, *, chunk: bool | None = None) -> BenchmarkMetrics:
+        if self.bundle is not None:
+            documents = self.bundle.documents
+            use_chunk = self.bundle.chunk_during_index if chunk is None else chunk
+        else:
+            documents = load_sample_corpus()
+            use_chunk = True if chunk is None else chunk
+
+        self.pipeline.index(documents, chunk=use_chunk)
 
         recalls_1: list[float] = []
         recalls_5: list[float] = []
@@ -81,7 +103,7 @@ class BenchmarkHarness:
             retrieved_ids = [c.chunk.id for c in retrieval.chunks]
             retrieved_contents = [c.chunk.content for c in retrieval.chunks]
 
-            if chunk:
+            if use_chunk:
                 recalls_1.append(recall_at_k_content(retrieved_contents, sample, 1))
                 recalls_5.append(recall_at_k_content(retrieved_contents, sample, 5))
                 recalls_10.append(recall_at_k_content(retrieved_contents, sample, 10))
@@ -94,7 +116,10 @@ class BenchmarkHarness:
 
             cited_text = " ".join(c.excerpt for c in answer.citations)
             faithfulness_scores.append(token_overlap(answer.text, cited_text))
-            correctness_scores.append(token_overlap(answer.text, sample.expected_answer))
+            if sample.expected_answer:
+                correctness_scores.append(token_overlap(answer.text, sample.expected_answer))
+            else:
+                correctness_scores.append(0.0)
 
         sorted_lat = sorted(latencies)
         return BenchmarkMetrics(
@@ -108,3 +133,18 @@ class BenchmarkHarness:
             p95_latency_ms=sorted_lat[max(int(len(sorted_lat) * 0.95) - 1, 0)],
             cost_per_query_usd=0.0002,
         )
+
+    def run_metadata(self) -> dict[str, str | int | float | bool]:
+        if self.bundle is None:
+            return {"dataset": "builtin", "num_samples": len(self.samples)}
+        return {
+            "dataset": self.bundle.name,
+            "num_samples": len(self.samples),
+            "num_corpus": self.bundle.num_corpus,
+            "citation": self.bundle.citation,
+            "multimodal": self.bundle.multimodal,
+        }
+
+
+def utc_timestamp() -> str:
+    return datetime.now(tz=UTC).isoformat()
