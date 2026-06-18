@@ -1,0 +1,74 @@
+[
+  {
+    "name": "dense-fixed-mock",
+    "strategy": "dense",
+    "chunker": "fixed-size",
+    "embedder": "mock-text",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 0.5,
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "mrr": 0.6388888888888888,
+      "faithfulness": 0.7493408362754211,
+      "correctness": 0.07317504235303963,
+      "p50_latency_ms": 0.12491701636463404,
+      "p95_latency_ms": 0.12725000851787627,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "hybrid-semantic-mm",
+    "strategy": "hybrid",
+    "chunker": "semantic",
+    "embedder": "mock-multimodal",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 0.5,
+      "recall_at_5": 0.8333333333333334,
+      "recall_at_10": 1.0,
+      "mrr": 0.6444444444444445,
+      "faithfulness": 0.7079161579161579,
+      "correctness": 0.13673178673178674,
+      "p50_latency_ms": 0.5515000084415078,
+      "p95_latency_ms": 0.5602079909294844,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "hybrid-fixed-mm",
+    "strategy": "hybrid",
+    "chunker": "fixed-size",
+    "embedder": "mock-multimodal",
+    "reranker": "cross-encoder",
+    "metrics": {
+      "recall_at_1": 0.16666666666666666,
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "mrr": 0.45,
+      "faithfulness": 0.7542145394137805,
+      "correctness": 0.08476725677864198,
+      "p50_latency_ms": 0.42554200626909733,
+      "p95_latency_ms": 0.4258330154698342,
+      "cost_per_query_usd": 0.0002
+    }
+  },
+  {
+    "name": "bm25-semantic-mock",
+    "strategy": "bm25",
+    "chunker": "semantic",
+    "embedder": "mock-text",
+    "reranker": "score-fusion",
+    "metrics": {
+      "recall_at_1": 1.0,
+      "recall_at_5": 1.0,
+      "recall_at_10": 1.0,
+      "mrr": 1.0,
+      "faithfulness": 0.7073751255875774,
+      "correctness": 0.1681765258466157,
+      "p50_latency_ms": 0.08512500789947808,
+      "p95_latency_ms": 0.0862079905346036,
+      "cost_per_query_usd": 0.0002
+    }
+  }
+]

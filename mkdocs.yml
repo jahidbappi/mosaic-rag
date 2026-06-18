@@ -1,0 +1,17 @@
+site_name: Mosaic
+site_description: Multimodal retrieval engine with rigorous evaluation
+theme:
+  name: material
+  palette:
+    - scheme: slate
+      primary: deep purple
+      accent: purple
+nav:
+  - Home: index.md
+  - API: api.md
+  - Benchmarks: benchmarks.md
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
