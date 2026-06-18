@@ -1,5 +1,7 @@
 # Mosaic
 
+[![Mosaic CI](https://github.com/jahidbappi/mosaic-rag/actions/workflows/ci.yml/badge.svg)](https://github.com/jahidbappi/mosaic-rag/actions)
+
 **Multimodal retrieval engine with a reproducible evaluation harness.**
 
 Mosaic assembles text and image chunks into grounded, cited answers — like tiles in a mosaic forming one coherent picture. It ships pluggable embeddings, hybrid retrieval, rerankers, chunking strategies, and honest benchmark ablations.
