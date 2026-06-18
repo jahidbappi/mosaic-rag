@@ -42,6 +42,8 @@ export default function BenchmarksPage() {
         embedder: "mock",
         timestamp: "",
         citation: "",
+        seed: undefined as number | undefined,
+        source_url: undefined as string | undefined,
         results: leaderboardData as LeaderboardRow[],
       };
 
@@ -89,6 +91,7 @@ export default function BenchmarksPage() {
                 benchmarks.
               </p>
             )}
+            {meta.source_url && (
               <a
                 href={meta.source_url}
                 className="mt-2 inline-block text-emerald-300 hover:underline"
