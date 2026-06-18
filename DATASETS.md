@@ -62,9 +62,13 @@ mosaic-benchmark --dataset scifact --max-samples 20 --embedder mock
 # Default ablations (SciFact, 50 queries)
 mosaic-benchmark --output benchmarks/results
 
-# Full SciFact with real embeddings
+# Full SciFact with real embeddings (recommended: bge-small for quality, minilm for speed)
 pip install -e ".[ml]"
-mosaic-benchmark --dataset scifact --max-samples 300 --embedder minilm
+mosaic-benchmark --dataset scifact --max-samples 50 --embedder bge-small --seed 42
+mosaic-benchmark --dataset scifact --max-samples 50 --embedder minilm --seed 42
+
+# Optional: Ollama embeddings (requires ollama pull nomic-embed-text)
+mosaic-benchmark --dataset scifact --max-samples 50 --embedder ollama --seed 42
 ```
 
 Leaderboard JSON includes `dataset`, `num_samples`, `embedder`, `timestamp`, and `citation`.

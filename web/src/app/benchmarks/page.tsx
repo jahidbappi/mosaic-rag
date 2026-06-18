@@ -6,6 +6,7 @@ type LeaderboardRow = {
   name: string;
   strategy: string;
   embedder: string;
+  chunker?: string;
   metrics: {
     mrr: number;
     recall_at_5: number;
@@ -24,12 +25,17 @@ type LeaderboardFile = {
   license?: string;
   source_url?: string;
   seed?: number;
+  commit?: string;
   multimodal?: boolean;
   results: LeaderboardRow[];
 };
 
 function isWrapped(data: unknown): data is LeaderboardFile {
   return typeof data === "object" && data !== null && "results" in data;
+}
+
+function pct(value: number): string {
+  return `${(value * 100).toFixed(1)}%`;
 }
 
 export default function BenchmarksPage() {
@@ -43,11 +49,17 @@ export default function BenchmarksPage() {
         timestamp: "",
         citation: "",
         seed: undefined as number | undefined,
+        commit: undefined as string | undefined,
         source_url: undefined as string | undefined,
         results: leaderboardData as LeaderboardRow[],
       };
 
   const rows = meta.results;
+  const bm25 = rows.find((r) => r.strategy === "bm25");
+  const denseBest = rows
+    .filter((r) => r.strategy === "dense" || r.strategy === "hybrid")
+    .sort((a, b) => b.metrics.mrr - a.metrics.mrr)[0];
+  const isMock = meta.embedder.includes("mock");
 
   return (
     <>
@@ -79,11 +91,18 @@ export default function BenchmarksPage() {
                   · <span className="text-white/80">Seed:</span> {meta.seed}
                 </>
               )}
+              {meta.commit && (
+                <>
+                  {" "}
+                  · <span className="text-white/80">Commit:</span>{" "}
+                  <code className="text-emerald-300">{meta.commit}</code>
+                </>
+              )}
             </p>
             {meta.citation && (
               <p className="mt-2 text-xs leading-relaxed text-white/40">{meta.citation}</p>
             )}
-            {meta.embedder.includes("mock") && (
+            {isMock && (
               <p className="mt-2 text-xs text-amber-300/80">
                 Mock embedder: dense/hybrid scores are not semantically meaningful. BM25 sparse
                 retrieval reflects real SciFact IR performance. Use{" "}
@@ -102,6 +121,51 @@ export default function BenchmarksPage() {
               </a>
             )}
           </div>
+
+          {bm25 && denseBest && !isMock && (
+            <div className="mt-10">
+              <h2 className="text-lg font-medium text-white">BM25 vs Best Dense/Hybrid</h2>
+              <p className="mt-1 text-sm text-white/50">
+                Head-to-head on SciFact ({meta.num_samples} queries, seed {meta.seed ?? 42})
+              </p>
+              <div className="mt-4 overflow-x-auto rounded-2xl border border-white/10">
+                <table className="w-full text-left text-sm">
+                  <thead className="border-b border-white/10 bg-white/[0.03]">
+                    <tr>
+                      <th className="px-4 py-3 font-medium text-white/60">Config</th>
+                      <th className="px-4 py-3 font-medium text-white/60">Strategy</th>
+                      <th className="px-4 py-3 font-medium text-white/60">MRR</th>
+                      <th className="px-4 py-3 font-medium text-white/60">Recall@5</th>
+                      <th className="px-4 py-3 font-medium text-white/60">Faithfulness</th>
+                      <th className="px-4 py-3 font-medium text-white/60">p50 (ms)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[bm25, denseBest].map((row) => (
+                      <tr key={row.name} className="border-b border-white/5">
+                        <td className="px-4 py-3 font-medium">{row.name}</td>
+                        <td className="px-4 py-3 text-white/60">{row.strategy}</td>
+                        <td className="px-4 py-3">{pct(row.metrics.mrr)}</td>
+                        <td className="px-4 py-3">{pct(row.metrics.recall_at_5)}</td>
+                        <td className="px-4 py-3">{pct(row.metrics.faithfulness)}</td>
+                        <td className="px-4 py-3">{row.metrics.p50_latency_ms.toFixed(1)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-3 text-xs text-white/40">
+                Δ MRR (dense/hybrid − BM25):{" "}
+                <span
+                  className={
+                    denseBest.metrics.mrr >= bm25.metrics.mrr ? "text-emerald-300" : "text-amber-300"
+                  }
+                >
+                  {((denseBest.metrics.mrr - bm25.metrics.mrr) * 100).toFixed(1)} pp
+                </span>
+              </p>
+            </div>
+          )}
 
           <div className="mt-10 overflow-x-auto rounded-2xl border border-white/10">
             <table className="w-full text-left text-sm">
@@ -122,9 +186,9 @@ export default function BenchmarksPage() {
                     <td className="px-4 py-3 text-emerald-300">#{i + 1}</td>
                     <td className="px-4 py-3 font-medium">{row.name}</td>
                     <td className="px-4 py-3 text-white/60">{row.strategy}</td>
-                    <td className="px-4 py-3">{(row.metrics.mrr * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3">{(row.metrics.recall_at_5 * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3">{(row.metrics.faithfulness * 100).toFixed(1)}%</td>
+                    <td className="px-4 py-3">{pct(row.metrics.mrr)}</td>
+                    <td className="px-4 py-3">{pct(row.metrics.recall_at_5)}</td>
+                    <td className="px-4 py-3">{pct(row.metrics.faithfulness)}</td>
                     <td className="px-4 py-3">{row.metrics.p50_latency_ms.toFixed(2)}</td>
                   </tr>
                 ))}
@@ -132,10 +196,11 @@ export default function BenchmarksPage() {
             </table>
           </div>
           <p className="mt-8 text-sm text-white/40">
-            Reproduce:{" "}
+            Reproduce locally (free, no API keys):{" "}
             <code className="text-emerald-300">
-              mosaic-benchmark --dataset {meta.dataset} --max-samples {meta.num_samples} --embedder{" "}
-              {meta.embedder} --output benchmarks/results
+              pip install -e &quot;.[ml]&quot; && mosaic-benchmark --dataset {meta.dataset}{" "}
+              --max-samples {meta.num_samples} --embedder minilm --seed {meta.seed ?? 42} --output
+              benchmarks/results
             </code>
           </p>
         </div>

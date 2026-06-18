@@ -63,10 +63,12 @@ print(answer.citations)
 
 | Layer | Implementations |
 |-------|-----------------|
-| Embeddings | `mock-text`, `mock-multimodal`, `sentence-transformers`, `clip` |
+| Embeddings | `all-MiniLM-L6-v2` (CI), **`BAAI/bge-small-en-v1.5`** (recommended), `clip-ViT-B-32`, `nomic-embed-text` (Ollama) |
 | Retrieval | `dense`, `bm25`, `hybrid` |
-| Rerankers | `score-fusion`, `cross-encoder` |
+| Rerankers | `score-fusion`, **`cross-encoder/ms-marco-MiniLM-L-6-v2`** |
 | Chunking | `fixed-size`, `semantic` |
+
+See [FINDINGS.md](FINDINGS.md) for SciFact ablation analysis and BEIR baseline context.
 
 ## Benchmark
 
@@ -74,8 +76,10 @@ Run ablations on **BEIR SciFact** (default) or other datasets:
 
 ```bash
 mosaic-benchmark --output benchmarks/results
-mosaic-benchmark --dataset scifact --max-samples 300 --embedder minilm
-mosaic-benchmark --dataset docvqa --max-samples 50
+mosaic-benchmark --dataset scifact --max-samples 50 --embedder minilm --seed 42   # CI-scale
+mosaic-benchmark --dataset scifact --max-samples 50 --embedder bge-small --seed 42  # recommended local
+mosaic-benchmark --dataset scifact --max-samples 300 --embedder bge-small
+mosaic-benchmark --dataset docvqa --max-samples 20 --embedder minilm
 mosaic-benchmark --dataset builtin --quick   # synthetic smoke test only
 ```
 

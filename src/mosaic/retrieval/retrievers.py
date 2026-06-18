@@ -33,14 +33,17 @@ class DenseRetriever(BaseRetriever):
     def __init__(self, embedder: BaseEmbedder) -> None:
         self.embedder = embedder
         self._vectors: dict[str, np.ndarray] = {}
+        self._indexed = False
 
     def index(self, chunks: list[DocumentChunk]) -> None:
         for chunk in chunks:
-            self._vectors[chunk.id] = self.embedder.embed_chunk(chunk)
+            if chunk.id not in self._vectors:
+                self._vectors[chunk.id] = self.embedder.embed_chunk(chunk)
+        self._indexed = True
 
     def retrieve(self, query: Query, chunks: list[DocumentChunk], top_k: int) -> RetrievalResult:
         start = time.perf_counter()
-        if not self._vectors:
+        if not self._indexed:
             self.index(chunks)
 
         q_vec = (
@@ -81,6 +84,7 @@ class BM25Retriever(BaseRetriever):
         self._avgdl = 0.0
         self._df: Counter[str] = Counter()
         self._N = 0
+        self._indexed = False
 
     @staticmethod
     def _tokenize(text: str) -> list[str]:
@@ -99,6 +103,7 @@ class BM25Retriever(BaseRetriever):
                 self._df[term] += 1
         self._N = len(self._docs)
         self._avgdl = sum(lengths) / max(len(lengths), 1)
+        self._indexed = True
 
     def _score(self, query_terms: list[str], tf: Counter[str], dl: int) -> float:
         score = 0.0
@@ -114,7 +119,7 @@ class BM25Retriever(BaseRetriever):
 
     def retrieve(self, query: Query, chunks: list[DocumentChunk], top_k: int) -> RetrievalResult:
         start = time.perf_counter()
-        if not self._docs:
+        if not self._indexed:
             self.index(chunks)
 
         query_terms = self._tokenize(query.text)
@@ -144,14 +149,17 @@ class HybridRetriever(BaseRetriever):
         self.dense = dense
         self.sparse = sparse
         self.alpha = alpha
+        self._indexed = False
 
     def index(self, chunks: list[DocumentChunk]) -> None:
         self.dense.index(chunks)
         self.sparse.index(chunks)
+        self._indexed = True
 
     def retrieve(self, query: Query, chunks: list[DocumentChunk], top_k: int) -> RetrievalResult:
         start = time.perf_counter()
-        self.index(chunks)
+        if not self._indexed:
+            self.index(chunks)
 
         dense_result = self.dense.retrieve(query, chunks, top_k=max(top_k * 3, 10))
         sparse_result = self.sparse.retrieve(query, chunks, top_k=max(top_k * 3, 10))

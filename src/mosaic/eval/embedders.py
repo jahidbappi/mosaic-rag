@@ -4,6 +4,7 @@ import warnings
 from typing import Literal
 
 from mosaic.embeddings.base import BaseEmbedder
+from mosaic.embeddings.ollama import OllamaEmbedder
 from mosaic.embeddings.providers import (
     CLIPEmbedder,
     MockMultimodalEmbedder,
@@ -11,7 +12,7 @@ from mosaic.embeddings.providers import (
     SentenceTransformerEmbedder,
 )
 
-EmbedderName = Literal["mock", "minilm", "clip"]
+EmbedderName = Literal["mock", "minilm", "bge-small", "clip", "ollama"]
 
 
 def resolve_embedder(name: EmbedderName) -> BaseEmbedder:
@@ -20,6 +21,16 @@ def resolve_embedder(name: EmbedderName) -> BaseEmbedder:
     if name == "minilm":
         try:
             return SentenceTransformerEmbedder("all-MiniLM-L6-v2")
+        except ImportError:
+            warnings.warn(
+                "sentence-transformers not installed; falling back to mock-text embedder. "
+                "Install with: pip install mosaic-rag[ml]",
+                stacklevel=2,
+            )
+            return MockTextEmbedder()
+    if name == "bge-small":
+        try:
+            return SentenceTransformerEmbedder("BAAI/bge-small-en-v1.5")
         except ImportError:
             warnings.warn(
                 "sentence-transformers not installed; falling back to mock-text embedder. "
@@ -36,4 +47,13 @@ def resolve_embedder(name: EmbedderName) -> BaseEmbedder:
                 stacklevel=2,
             )
             return MockMultimodalEmbedder()
-    raise ValueError(f"Unknown embedder '{name}'. Choose from: mock, minilm, clip")
+    if name == "ollama":
+        try:
+            return OllamaEmbedder()
+        except Exception as exc:
+            warnings.warn(
+                f"Ollama embedder unavailable ({exc}); falling back to mock-text.",
+                stacklevel=2,
+            )
+            return MockTextEmbedder()
+    raise ValueError(f"Unknown embedder '{name}'. Choose from: mock, minilm, bge-small, clip, ollama")

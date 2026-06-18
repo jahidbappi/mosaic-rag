@@ -3,6 +3,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import subprocess
+
 from mosaic.chunking.chunkers import FixedSizeChunker, SemanticChunker
 from mosaic.embeddings.providers import MockMultimodalEmbedder, MockTextEmbedder
 from mosaic.eval.embedders import EmbedderName, resolve_embedder
@@ -69,6 +71,7 @@ def run_ablations(
     (output_dir / "ablation_results.json").write_text(json.dumps(serializable, indent=2), encoding="utf-8")
 
     leaderboard = sorted(serializable, key=lambda x: x["metrics"]["mrr"], reverse=True)
+    commit_sha = _git_commit_sha()
     meta = {
         "dataset": bundle.name,
         "num_samples": len(bundle.samples),
@@ -80,9 +83,17 @@ def run_ablations(
         "source_url": bundle.source_url,
         "seed": seed,
         "multimodal": bundle.multimodal,
+        "commit": commit_sha,
         "results": leaderboard,
     }
     (output_dir / "leaderboard.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+
+    web_leaderboard = Path("web/src/data/leaderboard.json")
+    if web_leaderboard.parent.exists():
+        web_leaderboard.write_text(json.dumps(meta, indent=2), encoding="utf-8")
+        public_lb = Path("web/public/leaderboard.json")
+        if public_lb.parent.exists():
+            public_lb.write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
     return results
 
@@ -107,3 +118,15 @@ def _serialize_result(
         "source_url": bundle.source_url,
         "requested_embedder": embedder,
     }
+
+
+def _git_commit_sha() -> str | None:
+    try:
+        out = subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+        return out.strip() or None
+    except (subprocess.CalledProcessError, FileNotFoundError, OSError):
+        return None

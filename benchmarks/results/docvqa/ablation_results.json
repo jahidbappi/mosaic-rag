@@ -1,0 +1,98 @@
+[
+  {
+    "name": "dense-fixed",
+    "strategy": "dense",
+    "chunker": "fixed-size",
+    "embedder": "all-MiniLM-L6-v2",
+    "reranker": "score-fusion",
+    "dataset": "docvqa",
+    "num_samples": 20,
+    "timestamp": "2026-06-18T22:50:49.318868+00:00",
+    "metrics": {
+      "recall_at_1": 0.3,
+      "recall_at_5": 0.55,
+      "recall_at_10": 0.8,
+      "mrr": 0.43720238095238095,
+      "faithfulness": 0.5735172199635619,
+      "correctness": 0.03543147714776122,
+      "p50_latency_ms": 32.69900000304915,
+      "p95_latency_ms": 358.80162499961443,
+      "cost_per_query_usd": 0.0002
+    },
+    "citation": "Mathew et al. (2021). DocVQA: A Dataset for VQA on Document Images. WACV.",
+    "source_url": "https://huggingface.co/datasets/lmms-lab/DocVQA",
+    "requested_embedder": "minilm"
+  },
+  {
+    "name": "hybrid-semantic",
+    "strategy": "hybrid",
+    "chunker": "semantic",
+    "embedder": "all-MiniLM-L6-v2",
+    "reranker": "score-fusion",
+    "dataset": "docvqa",
+    "num_samples": 20,
+    "timestamp": "2026-06-18T22:50:49.318868+00:00",
+    "metrics": {
+      "recall_at_1": 0.2,
+      "recall_at_5": 0.55,
+      "recall_at_10": 0.8,
+      "mrr": 0.34464285714285714,
+      "faithfulness": 0.599677565829197,
+      "correctness": 0.032189227371763475,
+      "p50_latency_ms": 18.358041997998953,
+      "p95_latency_ms": 97.37320899148472,
+      "cost_per_query_usd": 0.0002
+    },
+    "citation": "Mathew et al. (2021). DocVQA: A Dataset for VQA on Document Images. WACV.",
+    "source_url": "https://huggingface.co/datasets/lmms-lab/DocVQA",
+    "requested_embedder": "minilm"
+  },
+  {
+    "name": "hybrid-fixed-xenc",
+    "strategy": "hybrid",
+    "chunker": "fixed-size",
+    "embedder": "all-MiniLM-L6-v2",
+    "reranker": "cross-encoder",
+    "dataset": "docvqa",
+    "num_samples": 20,
+    "timestamp": "2026-06-18T22:50:49.318868+00:00",
+    "metrics": {
+      "recall_at_1": 0.3,
+      "recall_at_5": 0.8,
+      "recall_at_10": 0.8,
+      "mrr": 0.48,
+      "faithfulness": 0.5359794541791179,
+      "correctness": 0.04773827664147404,
+      "p50_latency_ms": 87.70254199043848,
+      "p95_latency_ms": 136.48275000741705,
+      "cost_per_query_usd": 0.0002
+    },
+    "citation": "Mathew et al. (2021). DocVQA: A Dataset for VQA on Document Images. WACV.",
+    "source_url": "https://huggingface.co/datasets/lmms-lab/DocVQA",
+    "requested_embedder": "minilm"
+  },
+  {
+    "name": "bm25-semantic",
+    "strategy": "bm25",
+    "chunker": "semantic",
+    "embedder": "mock-text",
+    "reranker": "score-fusion",
+    "dataset": "docvqa",
+    "num_samples": 20,
+    "timestamp": "2026-06-18T22:50:49.318868+00:00",
+    "metrics": {
+      "recall_at_1": 0.15,
+      "recall_at_5": 0.25,
+      "recall_at_10": 0.5,
+      "mrr": 0.22311507936507935,
+      "faithfulness": 0.6042419938373313,
+      "correctness": 0.019223383389783646,
+      "p50_latency_ms": 0.11150000500492752,
+      "p95_latency_ms": 0.1312500098720193,
+      "cost_per_query_usd": 0.0002
+    },
+    "citation": "Mathew et al. (2021). DocVQA: A Dataset for VQA on Document Images. WACV.",
+    "source_url": "https://huggingface.co/datasets/lmms-lab/DocVQA",
+    "requested_embedder": "minilm"
+  }
+]

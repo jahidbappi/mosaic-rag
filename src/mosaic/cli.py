@@ -33,9 +33,9 @@ def main() -> None:
     )
     parser.add_argument(
         "--embedder",
-        choices=["mock", "minilm", "clip"],
+        choices=["mock", "minilm", "bge-small", "clip", "ollama"],
         default="mock",
-        help="Embedding backend (minilm requires pip install mosaic-rag[ml])",
+        help="Embedding backend (minilm/bge-small require pip install mosaic-rag[ml]; ollama requires local Ollama)",
     )
     parser.add_argument(
         "--cache-dir",
